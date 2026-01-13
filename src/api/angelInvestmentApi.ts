@@ -1,4 +1,5 @@
-// src/lib/angelInvestmentApi.ts
+import { supabase } from "../supabaseClient";
+import { sendAdminEmail } from "./sendAdminEmail";
 
 export type AngelInvestmentEnquiry = {
   id: string;
@@ -11,17 +12,7 @@ export type AngelInvestmentEnquiry = {
   created_at: string;
 };
 
-const API_BASE =
-  (process.env.REACT_APP_API_URL as string) || "http://localhost:5000";
-
-async function readJsonSafely(res: Response) {
-  const txt = await res.text();
-  try {
-    return txt ? JSON.parse(txt) : null;
-  } catch {
-    return null;
-  }
-}
+const TABLE = "angel_investment_enquiries";
 
 export const insertAngelInvestmentEnquiry = async (payload: {
   name: string;
@@ -31,47 +22,53 @@ export const insertAngelInvestmentEnquiry = async (payload: {
   investment_range?: string;
   message: string;
 }) => {
-  const res = await fetch(`${API_BASE}/api/enquiries/angel`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      name: payload.name,
-      phone: payload.phone,
-      email: payload.email,
-      company: payload.company ?? "",
-      investment_range: payload.investment_range ?? "",
-      message: payload.message,
-    }),
+  const { data, error } = await supabase
+    .from(TABLE)
+    .insert([
+      {
+        name: payload.name,
+        phone: payload.phone,
+        email: payload.email,
+        company: payload.company ?? null,
+        investment_range: payload.investment_range ?? null,
+        message: payload.message || null,
+      },
+    ])
+    .select("*")
+    .single();
+
+  if (error) throw error;
+
+  const text = [
+    "New angel investment enquiry",
+    `Name: ${payload.name}`,
+    `Phone: ${payload.phone}`,
+    `Email: ${payload.email}`,
+    payload.company ? `Company: ${payload.company}` : "",
+    payload.investment_range ? `Investment Range: ${payload.investment_range}` : "",
+    payload.message ? `Message: ${payload.message}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  await sendAdminEmail({
+    subject: `New angel investment enquiry - ${payload.name}`,
+    text,
+    replyTo: payload.email,
   });
 
-  const body = await readJsonSafely(res);
-
-  if (!res.ok || !body?.ok) {
-    const msg =
-      body?.error ||
-      (body?.issues ? JSON.stringify(body.issues) : null) ||
-      `Request failed (${res.status})`;
-    throw new Error(msg);
-  }
-
-  // backend returns { ok: true, data: {...row...} }
-  return body.data as AngelInvestmentEnquiry;
+  return data as AngelInvestmentEnquiry;
 };
 
 export const fetchAngelInvestmentEnquiries = async (): Promise<
   AngelInvestmentEnquiry[]
 > => {
-  const res = await fetch(`${API_BASE}/api/enquiries/angel`, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  });
+  const { data, error } = await supabase
+    .from(TABLE)
+    .select("*")
+    .order("created_at", { ascending: false });
 
-  const body = await readJsonSafely(res);
+  if (error) throw error;
 
-  if (!res.ok || !body?.ok) {
-    const msg = body?.error || `Request failed (${res.status})`;
-    throw new Error(msg);
-  }
-
-  return (body.data || []) as AngelInvestmentEnquiry[];
+  return (data || []) as AngelInvestmentEnquiry[];
 };

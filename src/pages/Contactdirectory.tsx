@@ -24,6 +24,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 import GlowCard from "../components/GlowCard";
 import SectionHeader from "../components/SectionHeader";
+import { insertAdmissionsEnquiry } from "../api/admissionsApi";
 
 type ContactCard = {
   title: string;
@@ -116,9 +117,6 @@ const Contactdirectory: React.FC = () => {
     "Other",
   ];
 
-  // ✅ HARD-CODE BACKEND URL (change when you deploy)
-  const API_BASE = "http://localhost:5000";
-
   const textFieldSx = {
     "& .MuiOutlinedInput-root": {
       "& fieldset": { borderColor: "rgba(255,255,255,0.7)" },
@@ -177,24 +175,9 @@ const Contactdirectory: React.FC = () => {
     try {
       setSubmitting(true);
 
-      const res = await fetch(`${API_BASE}/api/enquiries/admissions`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      await insertAdmissionsEnquiry(payload);
 
-      const data = await res.json().catch(() => ({}));
-
-      if (!res.ok || data?.ok === false) {
-        const issues =
-          Array.isArray(data?.issues) && data.issues.length
-            ? data.issues.map((i: any) => `${i.path}: ${i.message}`).join(", ")
-            : "";
-
-        throw new Error(data?.error || issues || "Request failed");
-      }
-
-      setSuccessMsg("Your enquiry has been submitted successfully ✅");
+      setSuccessMsg("Your enquiry has been submitted successfully.");
 
       setFormData({
         name: "",

@@ -1,4 +1,5 @@
-// src/lib/remoteEmploymentApi.ts
+import { supabase } from "../supabaseClient";
+import { sendAdminEmail } from "./sendAdminEmail";
 
 export type RemoteEmploymentEnquiry = {
   id: string;
@@ -11,17 +12,7 @@ export type RemoteEmploymentEnquiry = {
   created_at: string;
 };
 
-const API_BASE =
-  (process.env.REACT_APP_API_URL as string) || "http://localhost:5000";
-
-async function readJsonSafely(res: Response) {
-  const txt = await res.text();
-  try {
-    return txt ? JSON.parse(txt) : null;
-  } catch {
-    return null;
-  }
-}
+const TABLE = "remote_employment_enquiries";
 
 export const insertRemoteEmploymentEnquiry = async (payload: {
   name: string;
@@ -31,46 +22,53 @@ export const insertRemoteEmploymentEnquiry = async (payload: {
   skills?: string;
   message: string;
 }) => {
-  const res = await fetch(`${API_BASE}/api/enquiries/remote`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      name: payload.name,
-      phone: payload.phone,
-      email: payload.email,
-      role: payload.role ?? "",
-      skills: payload.skills ?? "",
-      message: payload.message,
-    }),
+  const { data, error } = await supabase
+    .from(TABLE)
+    .insert([
+      {
+        name: payload.name,
+        phone: payload.phone,
+        email: payload.email,
+        role: payload.role ?? null,
+        skills: payload.skills ?? null,
+        message: payload.message || null,
+      },
+    ])
+    .select("*")
+    .single();
+
+  if (error) throw error;
+
+  const text = [
+    "New remote employment enquiry",
+    `Name: ${payload.name}`,
+    `Phone: ${payload.phone}`,
+    `Email: ${payload.email}`,
+    payload.role ? `Role: ${payload.role}` : "",
+    payload.skills ? `Skills: ${payload.skills}` : "",
+    payload.message ? `Message: ${payload.message}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  await sendAdminEmail({
+    subject: `New remote employment enquiry - ${payload.name}`,
+    text,
+    replyTo: payload.email,
   });
 
-  const body = await readJsonSafely(res);
-
-  if (!res.ok || !body?.ok) {
-    const msg =
-      body?.error ||
-      (body?.issues ? JSON.stringify(body.issues) : null) ||
-      `Request failed (${res.status})`;
-    throw new Error(msg);
-  }
-
-  return body.data as RemoteEmploymentEnquiry;
+  return data as RemoteEmploymentEnquiry;
 };
 
 export const fetchRemoteEmploymentEnquiries = async (): Promise<
   RemoteEmploymentEnquiry[]
 > => {
-  const res = await fetch(`${API_BASE}/api/enquiries/remote`, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  });
+  const { data, error } = await supabase
+    .from(TABLE)
+    .select("*")
+    .order("created_at", { ascending: false });
 
-  const body = await readJsonSafely(res);
+  if (error) throw error;
 
-  if (!res.ok || !body?.ok) {
-    const msg = body?.error || `Request failed (${res.status})`;
-    throw new Error(msg);
-  }
-
-  return (body.data || []) as RemoteEmploymentEnquiry[];
+  return (data || []) as RemoteEmploymentEnquiry[];
 };

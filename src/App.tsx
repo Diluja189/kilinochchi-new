@@ -251,10 +251,6 @@ const CareerGuideRoute: React.FC = () => (
 );
 
 const App: React.FC = () => {
-  // ✅ ONLY FOR CONFIRMING .env is loaded (no logic change)
-  useEffect(() => {
-    console.log("API:", process.env.REACT_APP_API_URL);
-  }, []);
 
   return (
     <>

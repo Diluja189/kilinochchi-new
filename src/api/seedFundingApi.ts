@@ -1,4 +1,5 @@
-// src/lib/seedFundingApi.ts
+import { supabase } from "../supabaseClient";
+import { sendAdminEmail } from "./sendAdminEmail";
 
 export type SeedFundingEnquiry = {
   id: string;
@@ -11,17 +12,7 @@ export type SeedFundingEnquiry = {
   created_at: string;
 };
 
-const API_BASE =
-  (process.env.REACT_APP_API_URL as string) || "http://localhost:5000";
-
-async function readJsonSafely(res: Response) {
-  const txt = await res.text();
-  try {
-    return txt ? JSON.parse(txt) : null;
-  } catch {
-    return null;
-  }
-}
+const TABLE = "seed_funding_enquiries";
 
 export const insertSeedFundingEnquiry = async (payload: {
   name: string;
@@ -31,46 +22,53 @@ export const insertSeedFundingEnquiry = async (payload: {
   funding_stage?: string;
   message: string;
 }) => {
-  const res = await fetch(`${API_BASE}/api/enquiries/seed`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      name: payload.name,
-      phone: payload.phone,
-      email: payload.email,
-      startup_name: payload.startup_name ?? "",
-      funding_stage: payload.funding_stage ?? "",
-      message: payload.message,
-    }),
+  const { data, error } = await supabase
+    .from(TABLE)
+    .insert([
+      {
+        name: payload.name,
+        phone: payload.phone,
+        email: payload.email,
+        startup_name: payload.startup_name ?? null,
+        funding_stage: payload.funding_stage ?? null,
+        message: payload.message || null,
+      },
+    ])
+    .select("*")
+    .single();
+
+  if (error) throw error;
+
+  const text = [
+    "New seed funding enquiry",
+    `Name: ${payload.name}`,
+    `Phone: ${payload.phone}`,
+    `Email: ${payload.email}`,
+    payload.startup_name ? `Startup: ${payload.startup_name}` : "",
+    payload.funding_stage ? `Funding Stage: ${payload.funding_stage}` : "",
+    payload.message ? `Message: ${payload.message}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  await sendAdminEmail({
+    subject: `New seed funding enquiry - ${payload.name}`,
+    text,
+    replyTo: payload.email,
   });
 
-  const body = await readJsonSafely(res);
-
-  if (!res.ok || !body?.ok) {
-    const msg =
-      body?.error ||
-      (body?.issues ? JSON.stringify(body.issues) : null) ||
-      `Request failed (${res.status})`;
-    throw new Error(msg);
-  }
-
-  return body.data as SeedFundingEnquiry;
+  return data as SeedFundingEnquiry;
 };
 
 export const fetchSeedFundingEnquiries = async (): Promise<
   SeedFundingEnquiry[]
 > => {
-  const res = await fetch(`${API_BASE}/api/enquiries/seed`, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  });
+  const { data, error } = await supabase
+    .from(TABLE)
+    .select("*")
+    .order("created_at", { ascending: false });
 
-  const body = await readJsonSafely(res);
+  if (error) throw error;
 
-  if (!res.ok || !body?.ok) {
-    const msg = body?.error || `Request failed (${res.status})`;
-    throw new Error(msg);
-  }
-
-  return (body.data || []) as SeedFundingEnquiry[];
+  return (data || []) as SeedFundingEnquiry[];
 };

@@ -1,8 +1,8 @@
-import { useMemo, useState } from "react";
-import { supabase } from "../lib/supabaseClient";
-
-const API_BASE =
-  (process.env.REACT_APP_API_URL || "http://localhost:5000").replace(/\/$/, "");
+import { useState } from "react";
+import { insertAdmissionsEnquiry } from "../api/admissionsApi";
+import { insertAngelInvestmentEnquiry } from "../api/angelInvestmentApi";
+import { insertSeedFundingEnquiry } from "../api/seedFundingApi";
+import { insertRemoteEmploymentEnquiry } from "../api/remoteEmploymentApi";
 
 export default function EnquiryModal({ open, onClose, category }) {
   const [loading, setLoading] = useState(false);
@@ -27,22 +27,9 @@ export default function EnquiryModal({ open, onClose, category }) {
     skills: "", // remote
   });
 
-  const apiUrl = useMemo(() => API_BASE, []);
-  console.log("API:", apiUrl);
-
   if (!open) return null;
 
   const set = (k, v) => setForm((p) => ({ ...p, [k]: v }));
-
-  // ✅ map category -> backend route
-  const getEndpoint = () => {
-    if (isAdmissions) return `${apiUrl}/api/enquiries/admissions`;
-    if (isAngel) return `${apiUrl}/api/enquiries/angel`;
-    if (isSeed) return `${apiUrl}/api/enquiries/seed`;
-    if (isRemote) return `${apiUrl}/api/enquiries/remote`;
-    // fallback (default admissions)
-    return `${apiUrl}/api/enquiries/admissions`;
-  };
 
   const submit = async (e) => {
     e.preventDefault();
@@ -51,8 +38,7 @@ export default function EnquiryModal({ open, onClose, category }) {
       alert("Name & Email required");
       return;
     }
-
-    // ✅ Backend Zod validations (message min 2) — empty இருந்தா 400 வரும்
+    // Basic validation (message min 2)
     const safeMessage = (form.message || "").trim();
     if (safeMessage.length < 2) {
       alert("Message minimum 2 characters");
@@ -62,7 +48,6 @@ export default function EnquiryModal({ open, onClose, category }) {
     setLoading(true);
 
     try {
-      // ✅ Build payload exactly as backend expects
       let payload = {};
 
       if (isAdmissions) {
@@ -73,6 +58,7 @@ export default function EnquiryModal({ open, onClose, category }) {
           course: (form.course || "").trim() || "General",
           message: safeMessage,
         };
+        await insertAdmissionsEnquiry(payload);
       } else if (isAngel) {
         payload = {
           name: form.name.trim(),
@@ -82,6 +68,7 @@ export default function EnquiryModal({ open, onClose, category }) {
           investment_range: (form.investment_range || "").trim(),
           message: safeMessage,
         };
+        await insertAngelInvestmentEnquiry(payload);
       } else if (isSeed) {
         payload = {
           name: form.name.trim(),
@@ -91,6 +78,7 @@ export default function EnquiryModal({ open, onClose, category }) {
           funding_stage: (form.funding_stage || "").trim(),
           message: safeMessage,
         };
+        await insertSeedFundingEnquiry(payload);
       } else if (isRemote) {
         payload = {
           name: form.name.trim(),
@@ -100,8 +88,8 @@ export default function EnquiryModal({ open, onClose, category }) {
           skills: (form.skills || "").trim(),
           message: safeMessage,
         };
+        await insertRemoteEmploymentEnquiry(payload);
       } else {
-        // default admissions
         payload = {
           name: form.name.trim(),
           phone: (form.phone || "").trim(),
@@ -109,48 +97,10 @@ export default function EnquiryModal({ open, onClose, category }) {
           course: (form.course || "").trim() || "General",
           message: safeMessage,
         };
+        await insertAdmissionsEnquiry(payload);
       }
 
-      // ✅ 1) FIRST: send to backend => MySQL + Email
-      const endpoint = getEndpoint();
-      const resp = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      // ✅ After OPTIONS, you MUST see this POST in Network
-      const data = await resp.json().catch(() => ({}));
-
-      if (!resp.ok) {
-        const msg =
-          data?.error ||
-          (data?.issues ? JSON.stringify(data.issues) : "") ||
-          `HTTP ${resp.status}`;
-        alert("API Submit failed: " + msg);
-        setLoading(false);
-        return;
-      }
-
-      // ✅ 2) OPTIONAL: also store in Supabase (backup/admin UI)
-      // (If you want only MySQL, comment this block)
-      // NOTE: use your existing table "enquiries" or separate ones
-      const sbPayload = {
-        category: String(category || "").trim() || "General",
-        name: form.name.trim(),
-        email: form.email.trim(),
-        phone: form.phone.trim() || null,
-        message: safeMessage || null,
-        status: "New",
-      };
-
-      const { error: sbErr } = await supabase.from("enquiries").insert([sbPayload]);
-      if (sbErr) {
-        console.warn("Supabase backup insert failed:", sbErr.message);
-        // not blocking success (because MySQL already ok)
-      }
-
-      alert("Enquiry submitted ✅ (MySQL + API ok)");
+      alert("Enquiry submitted.");
       setForm({
         name: "",
         email: "",

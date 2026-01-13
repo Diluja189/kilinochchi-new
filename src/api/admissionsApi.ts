@@ -1,5 +1,8 @@
 // src/api/admissionsApi.ts
 
+import { supabase } from "../supabaseClient";
+import { sendAdminEmail } from "./sendAdminEmail";
+
 export type AdmissionsPayload = {
   name: string;
   phone: string;
@@ -8,32 +11,41 @@ export type AdmissionsPayload = {
   message: string;
 };
 
-function getApiBase() {
-  return process.env.REACT_APP_API_URL || "http://localhost:5001";
-}
+const TABLE = "admissions_enquiries";
 
 export async function insertAdmissionsEnquiry(payload: AdmissionsPayload) {
-  const API = getApiBase();
+  const { data, error } = await supabase
+    .from(TABLE)
+    .insert([
+      {
+        name: payload.name,
+        phone: payload.phone,
+        email: payload.email,
+        course: payload.course,
+        message: payload.message || null,
+      },
+    ])
+    .select("*")
+    .single();
 
-  const res = await fetch(`${API}/api/enquiries/admissions`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      name: payload.name,
-      phone: payload.phone,
-      email: payload.email,
-      course: payload.course,
-      message: payload.message,
-    }),
+  if (error) throw error;
+
+  const text = [
+    "New admissions enquiry",
+    `Name: ${payload.name}`,
+    `Phone: ${payload.phone}`,
+    `Email: ${payload.email}`,
+    `Course: ${payload.course}`,
+    payload.message ? `Message: ${payload.message}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  await sendAdminEmail({
+    subject: `New admissions enquiry - ${payload.name}`,
+    text,
+    replyTo: payload.email,
   });
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new Error(data?.error || "Failed to submit admission enquiry");
-  }
 
   return data;
 }
