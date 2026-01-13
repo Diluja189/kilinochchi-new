@@ -1,0 +1,76 @@
+// src/lib/remoteEmploymentApi.ts
+
+export type RemoteEmploymentEnquiry = {
+  id: string;
+  name: string;
+  phone: string;
+  email: string;
+  role: string | null;
+  skills: string | null;
+  message: string;
+  created_at: string;
+};
+
+const API_BASE =
+  (process.env.REACT_APP_API_URL as string) || "http://localhost:5000";
+
+async function readJsonSafely(res: Response) {
+  const txt = await res.text();
+  try {
+    return txt ? JSON.parse(txt) : null;
+  } catch {
+    return null;
+  }
+}
+
+export const insertRemoteEmploymentEnquiry = async (payload: {
+  name: string;
+  phone: string;
+  email: string;
+  role?: string;
+  skills?: string;
+  message: string;
+}) => {
+  const res = await fetch(`${API_BASE}/api/enquiries/remote`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: payload.name,
+      phone: payload.phone,
+      email: payload.email,
+      role: payload.role ?? "",
+      skills: payload.skills ?? "",
+      message: payload.message,
+    }),
+  });
+
+  const body = await readJsonSafely(res);
+
+  if (!res.ok || !body?.ok) {
+    const msg =
+      body?.error ||
+      (body?.issues ? JSON.stringify(body.issues) : null) ||
+      `Request failed (${res.status})`;
+    throw new Error(msg);
+  }
+
+  return body.data as RemoteEmploymentEnquiry;
+};
+
+export const fetchRemoteEmploymentEnquiries = async (): Promise<
+  RemoteEmploymentEnquiry[]
+> => {
+  const res = await fetch(`${API_BASE}/api/enquiries/remote`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  const body = await readJsonSafely(res);
+
+  if (!res.ok || !body?.ok) {
+    const msg = body?.error || `Request failed (${res.status})`;
+    throw new Error(msg);
+  }
+
+  return (body.data || []) as RemoteEmploymentEnquiry[];
+};
