@@ -53,33 +53,35 @@ const HomeSection: React.FC = () => {
       id="home"
       sx={{
         position: "relative",
-        py: { xs: 12, md: 16 },
+        // ✅ reduce top/bottom space (idaveli)
+        py: { xs: 6, md: 9 },
         overflow: "hidden",
       }}
     >
       <Container maxWidth="lg" sx={{ position: "relative", zIndex: 2 }}>
         <Stack
           direction={{ xs: "column", md: "row" }}
-          spacing={{ xs: 8, md: 10 }}
+          // ✅ reduce gap between left & right sections
+          spacing={{ xs: 5, md: 7 }}
           alignItems="center"
           justifyContent="space-between"
         >
           <Box sx={{ width: { xs: "100%", md: "52%" } }}>
-            <Stack spacing={3}>
+            <Stack spacing={2.2}>
               <Chip
                 label="The Digital Ai based Educational Campus of the Northern Province"
                 sx={{
                   alignSelf: { xs: "flex-start", md: "flex-start" },
                   backgroundColor: "rgba(128,0,0,0.18)",
                   border: "1px solid rgba(212,160,23,0.4)",
-                  color: "#fff5ea",
-                  fontWeight: 600,
+                  color: "#fffdf8",
+                  fontWeight: 700,
                   letterSpacing: 0.4,
-                  fontSize: { xs: '0.7rem', sm: '0.8125rem' },
-                  height: { xs: 'auto', sm: 32 },
-                  '& .MuiChip-label': {
-                    whiteSpace: { xs: 'normal', sm: 'nowrap' },
-                    padding: { xs: '6px 8px', sm: '0 12px' },
+                  fontSize: { xs: "0.82rem", sm: "0.92rem" },
+                  height: { xs: "auto", sm: 36 },
+                  "& .MuiChip-label": {
+                    whiteSpace: { xs: "normal", sm: "nowrap" },
+                    padding: { xs: "8px 10px", sm: "0 14px" },
                   },
                 }}
               />
@@ -87,9 +89,10 @@ const HomeSection: React.FC = () => {
               <Typography
                 variant="h2"
                 sx={{
-                  fontSize: { xs: "2.8rem", md: "3.6rem" },
+                  fontSize: { xs: "3.05rem", md: "3.95rem" },
                   fontWeight: 800,
                   lineHeight: 1.05,
+                  color: "#ffffff",
                 }}
               >
                 Crafting Tech Leaders for{" "}
@@ -109,9 +112,10 @@ const HomeSection: React.FC = () => {
               <Typography
                 variant="body1"
                 sx={{
-                  color: "rgba(255, 245, 234, 0.72)",
-                  fontSize: { xs: "1.05rem", md: "1.15rem" },
-                  maxWidth: 540,
+                  color: "rgba(255, 255, 255, 0.86)",
+                  fontSize: { xs: "1.15rem", md: "1.28rem" },
+                  maxWidth: 560,
+                  lineHeight: 1.75,
                 }}
               >
                 Don Bosco InfoTech Kilinochchi blends frontier technologies with
@@ -134,7 +138,7 @@ const HomeSection: React.FC = () => {
                   onClick={handleOpenVideo}
                   sx={{
                     borderColor: "rgba(255,245,234,0.3)",
-                    color: "rgba(255,245,234,0.9)",
+                    color: "rgba(255,255,255,0.92)",
                     minWidth: 180,
                     "&:hover": {
                       borderColor: "rgba(212,160,23,0.6)",
@@ -146,14 +150,14 @@ const HomeSection: React.FC = () => {
                 </Button>
               </Stack>
 
-              <Stack spacing={1.5} sx={{ pt: 1 }}>
+              <Stack spacing={1.15} sx={{ pt: 0.4 }}>
                 {highlights.map((item) => (
                   <Stack
                     key={item}
                     direction="row"
                     alignItems="center"
-                    spacing={1.5}
-                    sx={{ color: "rgba(255,245,234,0.7)" }}
+                    spacing={1.3}
+                    sx={{ color: "rgba(255,255,255,0.82)" }}
                   >
                     <Box
                       sx={{
@@ -165,7 +169,14 @@ const HomeSection: React.FC = () => {
                         boxShadow: "0 0 18px rgba(128,0,0,0.45)",
                       }}
                     />
-                    <Typography variant="body2" fontWeight={500}>
+                    <Typography
+                      variant="body2"
+                      fontWeight={600}
+                      sx={{
+                        fontSize: { xs: "0.98rem", md: "1.05rem" },
+                        color: "rgba(255,255,255,0.88)",
+                      }}
+                    >
                       {item}
                     </Typography>
                   </Stack>
@@ -181,7 +192,7 @@ const HomeSection: React.FC = () => {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                px: { xs: 3, md: 0 },
+                px: { xs: 2, md: 0 }, // ✅ reduce side padding
               }}
             >
               <MotionBox
@@ -196,7 +207,7 @@ const HomeSection: React.FC = () => {
                 <Box
                   sx={{
                     position: "absolute",
-                    inset: -30,
+                    inset: -26, // ✅ glow area slightly smaller
                     background:
                       "radial-gradient(circle at 30% 20%, rgba(128,0,0,0.35), transparent 60%), radial-gradient(circle at 80% 40%, rgba(212,160,23,0.28), transparent 60%)",
                     filter: "blur(14px)",
@@ -234,16 +245,21 @@ const HomeSection: React.FC = () => {
                   >
                     <Typography
                       variant="subtitle1"
-                      fontWeight={600}
-                      sx={{ color: "#fff5ea" }}
+                      fontWeight={700}
+                      sx={{
+                        color: "#ffffff",
+                        fontSize: { xs: "1.05rem", md: "1.12rem" },
+                      }}
                     >
                       Upcoming immersion week
                     </Typography>
                     <Typography
                       variant="body2"
                       sx={{
-                        color: "rgba(255,245,234,0.65)",
-                        mt: 0.5,
+                        color: "rgba(255,255,255,0.80)",
+                        mt: 0.6,
+                        fontSize: { xs: "0.95rem", md: "1.02rem" },
+                        lineHeight: 1.65,
                       }}
                     >
                       7-day sprint with AI labs, Zoho Creator bootcamp, and
@@ -261,7 +277,7 @@ const HomeSection: React.FC = () => {
           direction={{ xs: "column", md: "row" }}
           spacing={2.5}
           justifyContent="space-between"
-          sx={{ mt: { xs: 8, md: 10 } }}
+          sx={{ mt: { xs: 6, md: 7 } }} // ✅ reduce top margin before stats
         >
           {stats.map((stat) => (
             <MotionBox
@@ -277,22 +293,34 @@ const HomeSection: React.FC = () => {
                 sx={{
                   display: "flex",
                   flexDirection: "column",
-                  gap: 1,
+                  gap: 0.7,
                   height: "100%",
+                  py: { xs: 2.2, md: 2.6 },
+                  px: { xs: 2.6, md: 3.2 },
+                  minHeight: { xs: 86, md: 96 },
+                  borderRadius: "999px",
                 }}
               >
-                {/* Numbers in solid dark yellow */}
                 <Typography
                   variant="h3"
-                  fontWeight={700}
-                  sx={{ color: "#d4a017" }}
+                  fontWeight={800}
+                  sx={{
+                    color: "#d4a017",
+                    fontSize: { xs: "2.0rem", md: "2.2rem" },
+                    lineHeight: 1,
+                  }}
                 >
                   {stat.value}
                 </Typography>
-                {/* Labels in white */}
+
                 <Typography
                   variant="body1"
-                  sx={{ color: "#ffffff", maxWidth: 220 }}
+                  sx={{
+                    color: "rgba(255,255,255,0.92)",
+                    maxWidth: 240,
+                    fontSize: { xs: "0.98rem", md: "1.05rem" },
+                    lineHeight: 1.2,
+                  }}
                 >
                   {stat.label}
                 </Typography>
@@ -322,13 +350,15 @@ const HomeSection: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            color: "#fff5ea",
+            color: "#ffffff",
+            fontSize: { xs: "1.05rem", md: "1.15rem" },
+            fontWeight: 700,
           }}
         >
           Don Bosco InfoTech Our Story
           <IconButton
             onClick={handleCloseVideo}
-            sx={{ color: "rgba(255,245,234,0.7)" }}
+            sx={{ color: "rgba(255,255,255,0.78)" }}
           >
             <CloseRoundedIcon />
           </IconButton>
@@ -339,12 +369,11 @@ const HomeSection: React.FC = () => {
             sx={{
               position: "relative",
               width: "100%",
-              pt: "56.25%", // 16:9 aspect ratio
+              pt: "56.25%",
               borderRadius: 2,
               overflow: "hidden",
             }}
           >
-            {/* Loading overlay */}
             {videoLoading && (
               <Box
                 sx={{
@@ -362,7 +391,6 @@ const HomeSection: React.FC = () => {
               </Box>
             )}
 
-            {/* YouTube iframe */}
             <Box
               component="iframe"
               src="https://www.youtube.com/embed/u1jjgx9Hilc?si=pNknkQaf3h6yuev9"

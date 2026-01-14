@@ -22,7 +22,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import donbosco from "../assets/donbosco.png";
-import { Link } from "react-router-dom";
+// ✅ removed Link import (no admin button now)
 
 interface NavbarProps {
   scrollToSection: (id: string) => void;
@@ -36,7 +36,6 @@ const navLinks = [
   { label: "News", id: "news" },
   { label: "Placement", id: "placement" },
   { label: "Contact Directory", id: "contact-directory" },
-  { label: "Contact Us", id: "contact" },
   { label: "KI-Hub", id: "kihub" },
   { label: "Career Guide", id: "careerguide" },
 ];
@@ -114,10 +113,9 @@ const Navbar: React.FC<NavbarProps> = ({
           backdropFilter: "blur(18px)",
         }}
       >
-        {/* ✅ More width so right side has space */}
         <Container maxWidth="xl">
           <Toolbar disableGutters sx={{ py: 1.5 }}>
-            {/* ✅ Brand (fixed width, no shrink) */}
+            {/* Brand */}
             <Stack
               direction="row"
               spacing={1.4}
@@ -168,12 +166,12 @@ const Navbar: React.FC<NavbarProps> = ({
               </Box>
             </Stack>
 
-            {/* ✅ Desktop Nav (push to RIGHT properly) */}
+            {/* Desktop Nav */}
             <Box
               sx={{
                 display: { xs: "none", md: "flex" },
-                flex: 1, // ✅ take remaining space
-                justifyContent: "flex-end", // ✅ push right
+                flex: 1,
+                justifyContent: "flex-end",
                 alignItems: "center",
                 gap: 0.9,
                 flexWrap: "nowrap",
@@ -201,33 +199,17 @@ const Navbar: React.FC<NavbarProps> = ({
                 </Button>
               ))}
 
-              {/* ✅ CTA at END (always aligned) */}
+              {/* CTA at END */}
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => handleNavigate("courses")}
+                onClick={() => handleNavigate("contact")}
                 sx={{ ...ctaBtnSx, ml: 1 }}
               >
-                Apply Now
+                Apply
               </Button>
 
-              <Link to="/admin/login" style={{ textDecoration: "none" }}>
-                <Button
-                  variant="outlined"
-                  sx={{
-                    ...ctaBtnSx,
-                    ml: 0.6,
-                    color: "#fff5ea",
-                    borderColor: "rgba(255,245,234,0.45)",
-                    "&:hover": {
-                      borderColor: "rgba(255,245,234,0.75)",
-                      backgroundColor: "rgba(255,255,255,0.10)",
-                    },
-                  }}
-                >
-                  Admin Login
-                </Button>
-              </Link>
+              {/* ✅ Admin Login removed */}
             </Box>
 
             {/* Mobile toggle */}
@@ -246,6 +228,7 @@ const Navbar: React.FC<NavbarProps> = ({
         </Container>
       </AppBar>
 
+      {/* About Menu */}
       <Menu
         id="about-menu"
         anchorEl={aboutAnchorEl}
@@ -277,13 +260,7 @@ const Navbar: React.FC<NavbarProps> = ({
           },
         }}
       >
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          px={2}
-          py={2}
-        >
+        <Stack direction="row" alignItems="center" justifyContent="space-between" px={2} py={2}>
           <Typography variant="subtitle1" fontWeight={600}>
             Quick Links
           </Typography>
@@ -303,10 +280,7 @@ const Navbar: React.FC<NavbarProps> = ({
 
           {aboutTabs.map((tab) => (
             <ListItem key={tab.value} disablePadding sx={{ pl: 2 }}>
-              <ListItemButton
-                onClick={() => handleAboutSelection(tab.value)}
-                sx={{ borderRadius: 2 }}
-              >
+              <ListItemButton onClick={() => handleAboutSelection(tab.value)} sx={{ borderRadius: 2 }}>
                 <ListItemText primary={tab.label} />
               </ListItemButton>
             </ListItem>
@@ -316,34 +290,20 @@ const Navbar: React.FC<NavbarProps> = ({
 
           {navLinks.map((link) => (
             <ListItem key={`${link.id}-${link.label}`} disablePadding>
-              <ListItemButton
-                onClick={() => handleNavigate(link.id)}
-                sx={{ borderRadius: 2, mx: 1 }}
-              >
+              <ListItemButton onClick={() => handleNavigate(link.id)} sx={{ borderRadius: 2, mx: 1 }}>
                 <ListItemText primary={link.label} />
               </ListItemButton>
             </ListItem>
           ))}
 
-          <Divider sx={{ my: 1.5, borderColor: "rgba(255,255,255,0.08)" }} />
-
-          <ListItem disablePadding>
-            <ListItemButton
-              component={Link as any}
-              to="/admin/login"
-              onClick={() => setDrawerOpen(false)}
-              sx={{ borderRadius: 2, mx: 1 }}
-            >
-              <ListItemText primary="Admin Login" />
-            </ListItemButton>
-          </ListItem>
+          {/* ✅ Admin Login removed from drawer */}
         </List>
 
         <Box px={2} py={3}>
           <Button
             fullWidth
             variant="contained"
-            onClick={() => handleNavigate("courses")}
+            onClick={() => handleNavigate("contact")}
             sx={{ borderRadius: 999, textTransform: "none", fontWeight: 600 }}
           >
             Apply Now

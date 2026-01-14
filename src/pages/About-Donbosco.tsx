@@ -71,7 +71,6 @@ const storyBlocks = [
 
 const DonboscoSection: React.FC = () => {
   return (
-  
     <Container maxWidth="lg" sx={{ position: "relative", zIndex: 2 }}>
       <Stack
         direction={{ xs: "column", md: "row" }}
@@ -103,14 +102,24 @@ const DonboscoSection: React.FC = () => {
             >
               <Typography
                 variant="overline"
-                sx={{ color: "rgba(255,240,210,0.8)", letterSpacing: 1.4 }}
+                sx={{
+                  color: "rgba(255,255,255,0.82)", // ✅ brighter
+                  letterSpacing: 1.4,
+                  fontSize: "0.78rem", // ✅ slightly bigger
+                }}
               >
                 Don Bosco in one sentence
               </Typography>
+
               <Typography
                 variant="h6"
-                fontWeight={700}
-                sx={{ mt: 1.5, color: "#fff5ea" }}
+                fontWeight={800} // ✅ bolder
+                sx={{
+                  mt: 1.5,
+                  color: "#ffffff", // ✅ bright white
+                  fontSize: { xs: "1.22rem", md: "1.35rem" }, // ✅ bigger
+                  lineHeight: 1.35,
+                }}
               >
                 He formed young people to be{" "}
                 <Box component="span" sx={{ color: "#800000" }}>
@@ -123,10 +132,12 @@ const DonboscoSection: React.FC = () => {
                 variant="body2"
                 sx={{
                   mt: 2,
-                  color: "rgba(255,245,234,0.75)",
+                  color: "rgba(255,255,255,0.84)", // ✅ brighter
+                  fontSize: { xs: "1.02rem", md: "1.08rem" }, // ✅ bigger
+                  lineHeight: 1.75,
                 }}
               >
-               His way of education blended spiritual formation, character
+                His way of education blended spiritual formation, character
                 building, and practical skill training-an approach that still
                 inspires Don Bosco technical institutes around the world.
               </Typography>
@@ -144,7 +155,8 @@ const DonboscoSection: React.FC = () => {
                     borderColor: "rgba(212,160,23,0.4)",
                     borderWidth: 1,
                     borderStyle: "solid",
-                    color: "#fff5ea",
+                    color: "#ffffff", // ✅ brighter
+                    "& .MuiChip-label": { fontSize: "0.9rem" }, // ✅ bigger
                   }}
                 />
                 <Chip
@@ -155,10 +167,11 @@ const DonboscoSection: React.FC = () => {
                     borderColor: "rgba(244,193,73,0.4)",
                     borderWidth: 1,
                     borderStyle: "solid",
-                    color: "#fff5ea",
+                    color: "#ffffff", // ✅ brighter
+                    "& .MuiChip-label": { fontSize: "0.9rem" }, // ✅ bigger
                   }}
                 />
-              
+
                 <Chip
                   label="Founder of the Salesians"
                   size="small"
@@ -167,7 +180,8 @@ const DonboscoSection: React.FC = () => {
                     borderColor: "rgba(120,220,190,0.4)",
                     borderWidth: 1,
                     borderStyle: "solid",
-                    color: "#fff5ea",
+                    color: "#ffffff", // ✅ brighter
+                    "& .MuiChip-label": { fontSize: "0.9rem" }, // ✅ bigger
                   }}
                 />
               </Stack>
@@ -213,18 +227,30 @@ const DonboscoSection: React.FC = () => {
                           display: "grid",
                           placeItems: "center",
                           backgroundColor: "rgba(128,0,0,0.26)",
-                          color: "#fff5ea",
+                          color: "#ffffff", // ✅ brighter
                         }}
                       >
                         {idea.icon}
                       </Box>
-                      <Typography variant="subtitle2" fontWeight={700}>
+                      <Typography
+                        variant="subtitle2"
+                        fontWeight={800}
+                        sx={{
+                          color: "#ffffff", // ✅ brighter
+                          fontSize: { xs: "1.02rem", md: "1.08rem" }, // ✅ bigger
+                        }}
+                      >
                         {idea.label}
                       </Typography>
                     </Stack>
+
                     <Typography
                       variant="body2"
-                      sx={{ color: "rgba(255,245,234,0.75)" }}
+                      sx={{
+                        color: "rgba(255,255,255,0.82)", // ✅ brighter
+                        fontSize: { xs: "0.98rem", md: "1.05rem" }, // ✅ bigger
+                        lineHeight: 1.7,
+                      }}
                     >
                       {idea.text}
                     </Typography>
@@ -254,20 +280,30 @@ const DonboscoSection: React.FC = () => {
                   "linear-gradient(160deg, rgba(84,14,10,0.95), rgba(42,8,10,0.9))",
               }}
             >
-              <Typography variant="h5" fontWeight={700}>
+              <Typography
+                variant="h5"
+                fontWeight={800}
+                sx={{
+                  color: "#ffffff", // ✅ brighter
+                  fontSize: { xs: "1.45rem", md: "1.6rem" }, // ✅ bigger
+                }}
+              >
                 Don Bosco’s Journey
               </Typography>
+
               <Typography
                 variant="body2"
                 sx={{
-                  color: "rgba(255,245,234,0.7)",
+                  color: "rgba(255,255,255,0.82)", // ✅ brighter
                   mt: 1.2,
                   mb: 3,
+                  fontSize: { xs: "1.0rem", md: "1.08rem" }, // ✅ bigger
+                  lineHeight: 1.75,
                 }}
               >
-                A narrative arc from a struggling farm boy to a saint whose 
-                educational vision shapes Don Bosco institutes — and our 
-                campus — even today.
+                A narrative arc from a struggling farm boy to a saint whose
+                educational vision shapes Don Bosco institutes — and our campus
+                — even today.
               </Typography>
 
               <Box
@@ -294,7 +330,11 @@ const DonboscoSection: React.FC = () => {
                       transition={{ duration: 0.5, delay: index * 0.1 }}
                       viewport={{ once: true }}
                     >
-                      <Stack direction="row" spacing={2.5} alignItems="flex-start">
+                      <Stack
+                        direction="row"
+                        spacing={2.5}
+                        alignItems="flex-start"
+                      >
                         <Box
                           sx={{
                             mt: 0.5,
@@ -310,30 +350,39 @@ const DonboscoSection: React.FC = () => {
                         <Box>
                           <Typography
                             variant="subtitle2"
-                            fontWeight={700}
-                            sx={{ color: "#fff5ea" }}
+                            fontWeight={800}
+                            sx={{
+                              color: "#ffffff", // ✅ brighter
+                              fontSize: { xs: "1.02rem", md: "1.1rem" }, // ✅ bigger
+                            }}
                           >
                             {block.title}
                           </Typography>
+
                           <Typography
                             variant="body2"
                             sx={{
                               mt: 0.5,
-                              color: "rgba(255,230,170,0.85)",
-                              fontWeight: 500,
+                              color: "rgba(255,235,190,0.92)",
+                              fontWeight: 600,
+                              fontSize: { xs: "0.98rem", md: "1.05rem" }, // ✅ bigger
                             }}
                           >
                             {block.highlight}
                           </Typography>
+
                           <Typography
                             variant="body2"
                             sx={{
                               mt: 0.8,
-                              color: "rgba(255,245,234,0.75)",
+                              color: "rgba(255,255,255,0.82)", // ✅ brighter
+                              fontSize: { xs: "0.98rem", md: "1.05rem" }, // ✅ bigger
+                              lineHeight: 1.75,
                             }}
                           >
                             {block.body}
                           </Typography>
+
                           {index === storyBlocks.length - 1 && (
                             <>
                               <Divider
@@ -346,14 +395,17 @@ const DonboscoSection: React.FC = () => {
                               <Typography
                                 variant="body2"
                                 sx={{
-                                  color: "rgba(255,245,234,0.8)",
+                                  color: "rgba(255,255,255,0.86)", // ✅ brighter
+                                  fontSize: { xs: "1.0rem", md: "1.08rem" }, // ✅ bigger
+                                  lineHeight: 1.75,
                                 }}
                               >
-                               Bosco Tech’s mission follows this same philosophy: 
-                                open to young people of all faiths, yet firmly grounded 
-                                in the belief that true happiness comes from loving
-                                God and serving our neighbor through our gifts, skills, 
-                                and daily work
+                                Bosco Tech’s mission follows this same
+                                philosophy: open to young people of all faiths,
+                                yet firmly grounded in the belief that true
+                                happiness comes from loving God and serving our
+                                neighbor through our gifts, skills, and daily
+                                work
                               </Typography>
                             </>
                           )}
@@ -372,15 +424,3 @@ const DonboscoSection: React.FC = () => {
 };
 
 export default DonboscoSection;
-
-
-
-
-
-
-
-
-
-
-
-

@@ -8,7 +8,6 @@ const MotionBox = motion(Box);
 
 const MissionAndVisionSection: React.FC = () => {
   return (
- 
     <Container maxWidth="lg" sx={{ position: "relative", zIndex: 2 }}>
       <Stack
         direction={{ xs: "column", md: "row" }}
@@ -24,10 +23,7 @@ const MissionAndVisionSection: React.FC = () => {
           />
         </Box>
 
-        <Stack
-          sx={{ flex: 1.2, minWidth: 0 }}
-          spacing={3}
-        >
+        <Stack sx={{ flex: 1.2, minWidth: 0 }} spacing={3}>
           <MotionBox
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -45,23 +41,26 @@ const MissionAndVisionSection: React.FC = () => {
                 variant="overline"
                 sx={{
                   letterSpacing: 2,
-                  color: "rgba(255,240,210,0.8)",
+                  color: "rgba(255,255,255,0.86)", // ✅ brighter
+                  fontSize: "0.78rem", // ✅ slightly bigger
                 }}
               >
                 Vision
               </Typography>
+
               <Typography
                 variant="body1"
                 sx={{
                   mt: 1.5,
-                  color: "rgba(255,245,234,0.9)",
+                  color: "rgba(255,255,255,0.92)", // ✅ brighter
+                  fontSize: { xs: "1.08rem", md: "1.16rem" }, // ✅ bigger
+                  lineHeight: 1.85,
                 }}
               >
                 We are committed in creating a center for excellence where we
-                provide holistic education, professional training and
-                placement for the marginalized and the needy young people in
-                the onward vision of march of an emerging and developing
-                Sri Lanka.
+                provide holistic education, professional training and placement
+                for the marginalized and the needy young people in the onward
+                vision of march of an emerging and developing Sri Lanka.
               </Typography>
             </GlowCard>
           </MotionBox>
@@ -83,16 +82,20 @@ const MissionAndVisionSection: React.FC = () => {
                 variant="overline"
                 sx={{
                   letterSpacing: 2,
-                  color: "rgba(255,240,210,0.8)",
+                  color: "rgba(255,255,255,0.86)", // ✅ brighter
+                  fontSize: "0.78rem", // ✅ slightly bigger
                 }}
               >
                 Mission
               </Typography>
+
               <Typography
                 variant="body1"
                 sx={{
                   mt: 1.5,
-                  color: "rgba(255,245,234,0.9)",
+                  color: "rgba(255,255,255,0.92)", // ✅ brighter
+                  fontSize: { xs: "1.08rem", md: "1.16rem" }, // ✅ bigger
+                  lineHeight: 1.85,
                 }}
               >
                 We empower the marginalized and disadvantaged youth to reach
@@ -108,7 +111,3 @@ const MissionAndVisionSection: React.FC = () => {
 };
 
 export default MissionAndVisionSection;
-
-
-
-

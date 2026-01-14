@@ -1,4 +1,4 @@
-import { supabase } from "../supabaseClient";
+import { supabase, supabaseAnonKey } from "../supabaseClient";
 
 type AdminEmailPayload = {
   subject: string;
@@ -13,9 +13,16 @@ type AdminEmailResponse = {
 };
 
 export async function sendAdminEmail(payload: AdminEmailPayload) {
+  const { data: authData } = await supabase.auth.getSession();
+  const accessToken = authData.session?.access_token ?? supabaseAnonKey;
+
   const { data, error } = await supabase.functions.invoke<AdminEmailResponse>(
     "send-admin-email",
     {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        apikey: supabaseAnonKey,
+      },
       body: {
         subject: payload.subject,
         text: payload.text,

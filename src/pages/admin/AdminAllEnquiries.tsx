@@ -96,49 +96,39 @@ function looksLikeRange(r: Row) {
 }
 
 /* =========================================
-   Theme
+   LIGHTER Dark-Brown Theme ✅
 ========================================= */
 const COLORS = {
-  text: "#0F172A",
-  subText: "#475569",
+  text: "#FFF7ED",
+  subText: "rgba(255,247,237,0.82)",
 
-  paper: "rgba(255,255,255,0.82)",
-  paperStrong: "rgba(255,255,255,0.95)",
+  paper: "rgba(44,29,20,0.62)",
+  paperStrong: "rgba(44,29,20,0.78)",
 
-  border: "rgba(15,23,42,0.10)",
-  border2: "rgba(15,23,42,0.16)", // ✅ FIXED: was missing
-  borderHover: "rgba(15,23,42,0.18)",
+  border: "rgba(255,247,237,0.14)",
+  border2: "rgba(255,247,237,0.22)",
+  borderHover: "rgba(255,247,237,0.30)",
 
-  shadow: "0 14px 40px rgba(2,6,23,0.10)",
-  shadowHover: "0 18px 54px rgba(2,6,23,0.14)",
+  shadow: "0 16px 48px rgba(0,0,0,0.34)",
+  shadowHover: "0 20px 62px rgba(0,0,0,0.42)",
 
-  // date picker look (like screenshot)
-  dpHeader: "#111827",
-  dpBg: "#FFFFFF",
-  dpCellHover: "rgba(2,6,23,0.06)",
-  dpSelected: "#EF4444",
-  dpSelectedText: "#FFFFFF",
-  dpMuted: "rgba(15,23,42,0.45)",
+  dpHeader: "#FFF7ED",
+  dpBg: "rgba(34,23,16,0.92)",
+  dpCellHover: "rgba(255,247,237,0.07)",
+  dpSelected: "#C26A1A",
+  dpSelectedText: "#1B120C",
+  dpMuted: "rgba(255,247,237,0.60)",
+
+  accent: "#B45309",
+  accent2: "#9A3412",
+  danger: "#FB7185",
 };
 
 /* =========================================
-   Date helpers (no extra packages)
+   Date helpers
 ========================================= */
 const pad2 = (n: number) => String(n).padStart(2, "0");
-const monthShort = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
+const monthShort = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const weekShort = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
 function toDDMMYYYY(d: Date) {
@@ -152,11 +142,7 @@ function parseCreatedAt(v?: string) {
 }
 
 function isSameDay(a: Date, b: Date) {
-  return (
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate()
-  );
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
 
 function filterBySelectedDate(rows: Row[], selected: Date | null) {
@@ -170,6 +156,7 @@ function filterBySelectedDate(rows: Row[], selected: Date | null) {
 
 /* =========================================
    Mini calendar (no MUI X)
+   ✅ HEIGHT REDUCED (kurachchu)
 ========================================= */
 function startOfMonth(d: Date) {
   return new Date(d.getFullYear(), d.getMonth(), 1);
@@ -212,12 +199,11 @@ function MiniDatePicker({
   const grid = useMemo(() => {
     const first = startOfMonth(view);
     const last = endOfMonth(view);
-    const firstDow = first.getDay(); // 0=Su
+    const firstDow = first.getDay();
     const totalDays = last.getDate();
 
     const cells: Array<{ day: number; inMonth: boolean; date: Date }> = [];
 
-    // prev month
     const prevMonthEnd = new Date(view.getFullYear(), view.getMonth(), 0);
     const prevDays = prevMonthEnd.getDate();
     for (let i = 0; i < firstDow; i++) {
@@ -226,13 +212,11 @@ function MiniDatePicker({
       cells.push({ day, inMonth: false, date });
     }
 
-    // current month
     for (let d = 1; d <= totalDays; d++) {
       const date = new Date(view.getFullYear(), view.getMonth(), d);
       cells.push({ day: d, inMonth: true, date });
     }
 
-    // next month fill to 42 cells
     while (cells.length < 42) {
       const nextDay = cells.length - (firstDow + totalDays) + 1;
       const date = new Date(view.getFullYear(), view.getMonth() + 1, nextDay);
@@ -244,32 +228,30 @@ function MiniDatePicker({
 
   const today = new Date();
   const selectedStr = selected ? toDDMMYYYY(selected) : "All Dates";
-
-  // Input text like 05/07/2019
   const inputText = selected
     ? `${pad2(selected.getMonth() + 1)}/${pad2(selected.getDate())}/${selected.getFullYear()}`
     : "";
 
   return (
-    <Box sx={{ width: 330 }}>
-      {/* Input (style like screenshot) */}
+    <Box sx={{ width: 230 }}>
+      {/* Input (compact) */}
       <Box
         sx={{
           border: `1px solid ${COLORS.border}`,
-          borderRadius: 1.8,
+          borderRadius: 1.3,
           overflow: "hidden",
-          background: "#fff",
-          boxShadow: "0 10px 26px rgba(2,6,23,0.12)",
+          background: COLORS.dpBg,
+          boxShadow: "0 10px 20px rgba(0,0,0,0.32)",
         }}
       >
-        <Stack direction="row" alignItems="center" sx={{ height: 40 }}>
+        <Stack direction="row" alignItems="center" sx={{ height: 28 }}>
           <Box
             sx={{
               flex: 1,
-              px: 1.4,
-              fontWeight: 800,
+              px: 0.9,
+              fontWeight: 900,
               color: COLORS.text,
-              fontSize: 13,
+              fontSize: 11,
             }}
           >
             {inputText}
@@ -277,40 +259,41 @@ function MiniDatePicker({
 
           <Box
             sx={{
-              width: 44,
-              height: 40,
+              width: 32,
+              height: 28,
               display: "grid",
               placeItems: "center",
-              background: "#111827",
+              background: "linear-gradient(135deg, rgba(180,83,9,0.90), rgba(154,52,18,0.90))",
               color: "#fff",
+              borderLeft: `1px solid ${COLORS.border}`,
             }}
           >
-            <CalendarMonthRoundedIcon fontSize="small" />
+            <CalendarMonthRoundedIcon sx={{ fontSize: 15 }} />
           </Box>
         </Stack>
       </Box>
 
-      {/* Calendar card */}
+      {/* Calendar card (✅ reduced height by smaller paddings/cells/footer) */}
       <Box
         sx={{
-          mt: 1.2,
-          borderRadius: 1.8,
+          mt: 0.7,
+          borderRadius: 1.3,
           background: COLORS.dpBg,
           border: `1px solid ${COLORS.border}`,
-          boxShadow: "0 18px 46px rgba(2,6,23,0.14)",
+          boxShadow: "0 14px 34px rgba(0,0,0,0.42)",
           overflow: "hidden",
         }}
       >
-        {/* Month header */}
+        {/* Month header (compact) */}
         <Stack
           direction="row"
           alignItems="center"
           justifyContent="space-between"
           sx={{
-            px: 1.2,
-            py: 1.0,
+            px: 0.7,
+            py: 0.45,
             borderBottom: `1px solid ${COLORS.border}`,
-            background: "rgba(2,6,23,0.02)",
+            background: "rgba(255,247,237,0.04)",
           }}
         >
           <Button
@@ -322,20 +305,22 @@ function MiniDatePicker({
               }
             }}
             sx={{
-              minWidth: 34,
-              width: 34,
-              height: 34,
-              borderRadius: 1.4,
+              minWidth: 22,
+              width: 22,
+              height: 22,
+              borderRadius: 1.0,
               color: COLORS.text,
               background: "transparent",
               "&:hover": { background: COLORS.dpCellHover },
-              fontWeight: 900,
+              fontWeight: 950,
+              p: 0,
+              lineHeight: 1,
             }}
           >
             ‹
           </Button>
 
-          <Typography sx={{ fontWeight: 950, color: COLORS.dpHeader, fontSize: 13 }}>
+          <Typography sx={{ fontWeight: 950, color: COLORS.dpHeader, fontSize: 11 }}>
             {monthShort[view.getMonth()]} {view.getFullYear()}
           </Typography>
 
@@ -348,28 +333,30 @@ function MiniDatePicker({
               }
             }}
             sx={{
-              minWidth: 34,
-              width: 34,
-              height: 34,
-              borderRadius: 1.4,
+              minWidth: 22,
+              width: 22,
+              height: 22,
+              borderRadius: 1.0,
               color: COLORS.text,
               background: "transparent",
               "&:hover": { background: COLORS.dpCellHover },
-              fontWeight: 900,
+              fontWeight: 950,
+              p: 0,
+              lineHeight: 1,
             }}
           >
             ›
           </Button>
         </Stack>
 
-        {/* Week header + days */}
-        <Box sx={{ px: 1.2, pt: 1.0 }}>
+        {/* Week header + days (compact) */}
+        <Box sx={{ px: 0.7, pt: 0.45 }}>
           <Box
             sx={{
               display: "grid",
               gridTemplateColumns: "repeat(7, 1fr)",
-              gap: 0.6,
-              mb: 0.6,
+              gap: 0.25,
+              mb: 0.25,
             }}
           >
             {weekShort.map((w) => (
@@ -377,10 +364,10 @@ function MiniDatePicker({
                 key={w}
                 sx={{
                   textAlign: "center",
-                  fontSize: 11,
+                  fontSize: 9,
                   fontWeight: 900,
                   color: COLORS.dpMuted,
-                  py: 0.6,
+                  py: 0.2,
                 }}
               >
                 {w}
@@ -392,8 +379,8 @@ function MiniDatePicker({
             sx={{
               display: "grid",
               gridTemplateColumns: "repeat(7, 1fr)",
-              gap: 0.6,
-              pb: 1.2,
+              gap: 0.25,
+              pb: 0.55, // ✅ reduced
             }}
           >
             {grid.map((c, idx) => {
@@ -406,22 +393,21 @@ function MiniDatePicker({
                   onClick={() => onSelect(new Date(c.date))}
                   sx={{
                     minWidth: 0,
-                    height: 34,
-                    borderRadius: 1.6,
+                    height: 21, // ✅ reduced cell height
+                    borderRadius: 1.1,
                     p: 0,
                     fontWeight: 900,
-                    fontSize: 12,
+                    fontSize: 10,
+                    lineHeight: 1,
                     color: isSel
                       ? COLORS.dpSelectedText
                       : c.inMonth
                       ? COLORS.text
-                      : "rgba(15,23,42,0.35)",
+                      : "rgba(255,247,237,0.35)",
                     background: isSel ? COLORS.dpSelected : "transparent",
-                    boxShadow: isSel ? "0 10px 20px rgba(239,68,68,0.25)" : "none",
-                    border: isToday && !isSel ? "1px solid rgba(239,68,68,0.30)" : "1px solid transparent",
-                    "&:hover": {
-                      background: isSel ? COLORS.dpSelected : COLORS.dpCellHover,
-                    },
+                    boxShadow: isSel ? "0 6px 10px rgba(194,106,26,0.20)" : "none",
+                    border: isToday && !isSel ? "1px solid rgba(194,106,26,0.40)" : "1px solid transparent",
+                    "&:hover": { background: isSel ? COLORS.dpSelected : COLORS.dpCellHover },
                   }}
                 >
                   {c.day}
@@ -431,28 +417,28 @@ function MiniDatePicker({
           </Box>
         </Box>
 
-        {/* Footer */}
-        <Box sx={{ px: 1.4, py: 1.1, borderTop: `1px solid ${COLORS.border}` }}>
-          <Typography sx={{ fontWeight: 800, color: COLORS.subText, fontSize: 12 }}>
+        {/* Footer (✅ tighter) */}
+        <Box sx={{ px: 0.75, py: 0.55, borderTop: `1px solid ${COLORS.border}` }}>
+          <Typography sx={{ fontWeight: 800, color: COLORS.subText, fontSize: 10 }}>
             Current: <span style={{ color: COLORS.text }}>{selectedStr}</span>
           </Typography>
 
-          <Stack direction="row" justifyContent="flex-end" spacing={1.2} sx={{ mt: 1 }}>
+          <Stack direction="row" justifyContent="flex-end" spacing={0.6} sx={{ mt: 0.45 }}>
             <Button
               onClick={() => onSelect(new Date())}
               sx={{
                 borderRadius: 999,
                 textTransform: "none",
                 fontWeight: 950,
+                fontSize: 10.5,
                 color: COLORS.text,
-                background: "#FFFFFF",
+                background: "rgba(255,247,237,0.07)",
                 border: `1px solid ${COLORS.border}`,
-                boxShadow: "0 10px 24px rgba(2,6,23,0.10)",
-                px: 2.4,
-                "&:hover": {
-                  background: "#fff",
-                  borderColor: COLORS.border2, // ✅ FIXED (border2 exists now)
-                },
+                boxShadow: "0 8px 14px rgba(0,0,0,0.22)",
+                px: 1.2,
+                py: 0.25,
+                minHeight: 22, // ✅ smaller button height
+                "&:hover": { background: "rgba(255,247,237,0.11)", borderColor: COLORS.border2 },
               }}
             >
               Today
@@ -464,12 +450,15 @@ function MiniDatePicker({
                 borderRadius: 999,
                 textTransform: "none",
                 fontWeight: 950,
-                color: "#B91C1C",
-                background: "rgba(185,28,28,0.08)",
-                border: "1px solid rgba(185,28,28,0.18)",
-                boxShadow: "0 10px 24px rgba(185,28,28,0.14)",
-                px: 2.4,
-                "&:hover": { background: "rgba(185,28,28,0.12)" },
+                fontSize: 10.5,
+                color: "#FFE4D2",
+                background: "rgba(251,113,133,0.10)",
+                border: "1px solid rgba(251,113,133,0.22)",
+                boxShadow: "0 8px 14px rgba(0,0,0,0.22)",
+                px: 1.2,
+                py: 0.25,
+                minHeight: 22, // ✅ smaller button height
+                "&:hover": { background: "rgba(251,113,133,0.14)" },
               }}
             >
               Clear
@@ -502,7 +491,7 @@ function RowCard({
         borderRadius: 3.2,
         border: `1px solid ${COLORS.border}`,
         background: COLORS.paper,
-        backdropFilter: "blur(10px)",
+        backdropFilter: "blur(14px)",
         boxShadow: COLORS.shadow,
         transition: "0.25s",
         "&:hover": {
@@ -533,12 +522,12 @@ function RowCard({
             py: 0.7,
             fontWeight: 900,
             textTransform: "none",
-            color: "rgba(185,28,28,1)",
-            background: "rgba(185,28,28,0.08)",
-            border: "1px solid rgba(185,28,28,0.18)",
+            color: "#FFE4D2",
+            background: "rgba(251,113,133,0.10)",
+            border: "1px solid rgba(251,113,133,0.22)",
             "&:hover": {
-              background: "rgba(185,28,28,0.12)",
-              borderColor: "rgba(185,28,28,0.26)",
+              background: "rgba(251,113,133,0.14)",
+              borderColor: "rgba(251,113,133,0.30)",
             },
             "&:disabled": { opacity: 0.6 },
           }}
@@ -557,9 +546,9 @@ function RowCard({
             mb: 1.2,
             mr: 1,
             color: COLORS.text,
-            background: "rgba(245,158,11,0.10)",
-            border: "1px solid rgba(245,158,11,0.18)",
-            fontWeight: 700,
+            background: "rgba(194,106,26,0.16)",
+            border: "1px solid rgba(194,106,26,0.26)",
+            fontWeight: 800,
             "& .MuiChip-label": { whiteSpace: "nowrap" },
           }}
         />
@@ -614,7 +603,6 @@ export default function AdminAllEnquiries() {
 
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  // ✅ date filter
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [dateAnchor, setDateAnchor] = useState<HTMLElement | null>(null);
 
@@ -624,13 +612,7 @@ export default function AdminAllEnquiries() {
   const remoteRef = useRef<HTMLDivElement | null>(null);
 
   const scrollTo = (key: TabKey) => {
-    const map = {
-      admissions: admissionsRef,
-      angel: angelRef,
-      seed: seedRef,
-      remote: remoteRef,
-    } as const;
-
+    const map = { admissions: admissionsRef, angel: angelRef, seed: seedRef, remote: remoteRef } as const;
     map[key].current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
@@ -667,11 +649,7 @@ export default function AdminAllEnquiries() {
   };
 
   const fetchTable = async (table: string) => {
-    const { data, error } = await supabase
-      .from(table)
-      .select("*")
-      .order("created_at", { ascending: false });
-
+    const { data, error } = await supabase.from(table).select("*").order("created_at", { ascending: false });
     if (error) {
       console.error(`Fetch error for ${table}:`, error);
       return [] as Row[];
@@ -686,7 +664,6 @@ export default function AdminAllEnquiries() {
       fetchTable(TABLES.seed),
       fetchTable(TABLES.remote),
     ]);
-
     setAdmissions(a);
     setAngel(b);
     setSeed(c);
@@ -695,20 +672,17 @@ export default function AdminAllEnquiries() {
 
   const deleteRowByActiveTab = async (id: string) => {
     const table = TABLES[activeTab];
-
     const ok = window.confirm("Are you sure you want to delete this enquiry?");
     if (!ok) return;
 
     try {
       setDeletingId(id);
-
       const { error } = await supabase.from(table).delete().eq("id", id);
       if (error) {
         console.error("Delete error:", error);
         alert("Delete failed. Check console.");
         return;
       }
-
       if (activeTab === "admissions") setAdmissions((p) => p.filter((x) => x.id !== id));
       else if (activeTab === "angel") setAngel((p) => p.filter((x) => x.id !== id));
       else if (activeTab === "seed") setSeed((p) => p.filter((x) => x.id !== id));
@@ -746,10 +720,10 @@ export default function AdminAllEnquiries() {
 
   const sectionBg = {
     border: `1px solid ${COLORS.border}`,
-    background: "rgba(255,255,255,0.60)",
+    background: "rgba(44,29,20,0.46)",
     borderRadius: 4,
     p: { xs: 2.2, md: 3.0 },
-    boxShadow: "0 12px 34px rgba(2,6,23,0.06)",
+    boxShadow: "0 16px 44px rgba(0,0,0,0.28)",
   } as const;
 
   const dateLabel = selectedDate ? toDDMMYYYY(selectedDate) : "All Dates";
@@ -763,10 +737,10 @@ export default function AdminAllEnquiries() {
           placeItems: "center",
           color: COLORS.text,
           background:
-            "radial-gradient(1100px 700px at 18% 8%, rgba(185,28,28,0.10), transparent 55%), radial-gradient(900px 600px at 90% 20%, rgba(245,158,11,0.10), transparent 55%), linear-gradient(120deg, #f8fafc, #eef2ff)",
+            "radial-gradient(1100px 700px at 18% 8%, rgba(180,83,9,0.22), transparent 55%), radial-gradient(900px 600px at 90% 20%, rgba(154,52,18,0.18), transparent 55%), linear-gradient(120deg, #1A120D, #2C1D14)",
         }}
       >
-        <Typography sx={{ opacity: 0.9, fontWeight: 800 }}>Loading enquiries...</Typography>
+        <Typography sx={{ opacity: 0.9, fontWeight: 900 }}>Loading enquiries...</Typography>
       </Box>
     );
   }
@@ -777,7 +751,7 @@ export default function AdminAllEnquiries() {
         minHeight: "100vh",
         color: COLORS.text,
         background:
-          "radial-gradient(1100px 700px at 18% 8%, rgba(185,28,28,0.10), transparent 55%), radial-gradient(900px 600px at 90% 20%, rgba(245,158,11,0.10), transparent 55%), linear-gradient(120deg, #f8fafc, #eef2ff)",
+          "radial-gradient(1100px 700px at 18% 8%, rgba(180,83,9,0.22), transparent 55%), radial-gradient(900px 600px at 90% 20%, rgba(154,52,18,0.18), transparent 55%), linear-gradient(120deg, #1A120D, #2C1D14)",
         py: { xs: 8, md: 10 },
       }}
     >
@@ -791,11 +765,11 @@ export default function AdminAllEnquiries() {
             pb: 2,
             pt: 2,
             mb: 2,
-            backdropFilter: "blur(16px)",
-            background: "rgba(255,255,255,0.70)",
+            backdropFilter: "blur(18px)",
+            background: "rgba(44,29,20,0.55)",
             borderRadius: 4,
             border: `1px solid ${COLORS.border}`,
-            boxShadow: "0 12px 34px rgba(2,6,23,0.08)",
+            boxShadow: "0 18px 54px rgba(0,0,0,0.36)",
           }}
         >
           <Stack
@@ -809,7 +783,7 @@ export default function AdminAllEnquiries() {
               <Typography
                 variant="h4"
                 sx={{
-                  fontWeight: 950,
+                  fontWeight: 980,
                   letterSpacing: 0.2,
                   lineHeight: 1.1,
                   color: COLORS.text,
@@ -818,31 +792,32 @@ export default function AdminAllEnquiries() {
                 Admin Enquiries
               </Typography>
 
-              <Typography sx={{ color: COLORS.subText, mt: 0.6, fontWeight: 800 }}>
+              <Typography sx={{ color: COLORS.subText, mt: 0.6, fontWeight: 900 }}>
                 Filter: <span style={{ color: COLORS.text }}>{dateLabel}</span>
               </Typography>
             </Box>
 
             <Stack direction="row" spacing={1.2} alignItems="center" justifyContent="flex-end">
-              {/* Date pill */}
               <Button
                 onClick={(e) => setDateAnchor(e.currentTarget)}
-                startIcon={<CalendarMonthRoundedIcon />}
-                endIcon={<KeyboardArrowDownRoundedIcon />}
+                startIcon={<CalendarMonthRoundedIcon sx={{ fontSize: 18 }} />}
+                endIcon={<KeyboardArrowDownRoundedIcon sx={{ fontSize: 18 }} />}
                 sx={{
                   borderRadius: 999,
-                  px: 2.2,
-                  py: 1.05,
+                  px: 1.5,
+                  py: 0.65,
+                  minHeight: 36,
                   fontWeight: 950,
+                  fontSize: 13,
                   textTransform: "none",
                   color: COLORS.text,
-                  background: "#FFFFFF",
+                  background: "rgba(255,247,237,0.08)",
                   border: `1px solid ${COLORS.border}`,
-                  boxShadow: "0 10px 26px rgba(2,6,23,0.10)",
+                  boxShadow: "0 12px 28px rgba(0,0,0,0.28)",
                   "&:hover": {
-                    background: "#FFFFFF",
+                    background: "rgba(255,247,237,0.12)",
                     borderColor: COLORS.borderHover,
-                    boxShadow: "0 12px 30px rgba(2,6,23,0.14)",
+                    boxShadow: "0 16px 34px rgba(0,0,0,0.38)",
                     transform: "translateY(-1px)",
                   },
                 }}
@@ -856,24 +831,23 @@ export default function AdminAllEnquiries() {
                 startIcon={<LogoutRoundedIcon />}
                 sx={{
                   borderRadius: 999,
-                  px: 2.6,
-                  py: 1.05,
+                  px: 2.1,
+                  py: 0.8,
+                  minHeight: 36,
                   fontWeight: 950,
                   textTransform: "none",
-                  color: "#0F172A",
-                  background:
-                    "linear-gradient(135deg, rgba(185,28,28,0.16), rgba(245,158,11,0.20))",
-                  border: "1px solid rgba(185,28,28,0.14)",
-                  boxShadow: "0 10px 26px rgba(2,6,23,0.10)",
+                  color: COLORS.text,
+                  background: "linear-gradient(135deg, rgba(180,83,9,0.55), rgba(154,52,18,0.50))",
+                  border: `1px solid ${COLORS.border}`,
+                  boxShadow: "0 12px 28px rgba(0,0,0,0.28)",
                   "&:hover": {
-                    background:
-                      "linear-gradient(135deg, rgba(185,28,28,0.22), rgba(245,158,11,0.26))",
-                    boxShadow: "0 12px 30px rgba(2,6,23,0.14)",
+                    background: "linear-gradient(135deg, rgba(180,83,9,0.70), rgba(154,52,18,0.65))",
+                    boxShadow: "0 16px 34px rgba(0,0,0,0.38)",
                     transform: "translateY(-1px)",
                   },
                   "&:disabled": {
-                    background: "rgba(148,163,184,0.30)",
-                    color: "rgba(15,23,42,0.65)",
+                    background: "rgba(255,247,237,0.10)",
+                    color: "rgba(255,247,237,0.55)",
                     border: `1px solid ${COLORS.border}`,
                   },
                 }}
@@ -883,9 +857,8 @@ export default function AdminAllEnquiries() {
             </Stack>
           </Stack>
 
-          <Divider sx={{ my: 2, borderColor: "rgba(15,23,42,0.08)" }} />
+          <Divider sx={{ my: 2, borderColor: "rgba(255,247,237,0.12)" }} />
 
-          {/* Tabs */}
           <Stack direction={{ xs: "column", sm: "row" }} spacing={1} sx={{ px: { xs: 2, md: 3 }, pb: 0.5 }}>
             {(
               [
@@ -901,23 +874,20 @@ export default function AdminAllEnquiries() {
                 onClick={() => setActiveTab(key)}
                 sx={{
                   cursor: "pointer",
-                  fontWeight: 900,
+                  fontWeight: 950,
                   borderRadius: 999,
                   px: 1.2,
                   py: 2.2,
                   color: COLORS.text,
-                  background:
-                    activeTab === key ? "rgba(185,28,28,0.12)" : "rgba(255,255,255,0.82)",
-                  border:
-                    activeTab === key ? "1px solid rgba(185,28,28,0.22)" : `1px solid ${COLORS.border}`,
-                  "&:hover": { background: "rgba(255,255,255,0.96)" },
+                  background: activeTab === key ? "rgba(194,106,26,0.26)" : "rgba(255,247,237,0.08)",
+                  border: activeTab === key ? "1px solid rgba(194,106,26,0.40)" : `1px solid ${COLORS.border}`,
+                  "&:hover": { background: "rgba(255,247,237,0.12)" },
                 }}
               />
             ))}
           </Stack>
         </Box>
 
-        {/* Calendar Popover (style like screenshot) */}
         <Popover
           open={Boolean(dateAnchor)}
           anchorEl={dateAnchor}
@@ -926,16 +896,16 @@ export default function AdminAllEnquiries() {
           transformOrigin={{ vertical: "top", horizontal: "right" }}
           PaperProps={{
             sx: {
-              mt: 1,
+              mt: 0.6,
               borderRadius: 2,
               border: `1px solid ${COLORS.border}`,
-              boxShadow: "0 22px 70px rgba(2,6,23,0.18)",
+              boxShadow: "0 26px 80px rgba(0,0,0,0.52)",
               overflow: "visible",
               background: "transparent",
             },
           }}
         >
-          <Box sx={{ position: "relative", p: 0.6 }}>
+          <Box sx={{ position: "relative", p: 0.4 }}>
             <IconButton
               onClick={() => setDateAnchor(null)}
               size="small"
@@ -944,10 +914,11 @@ export default function AdminAllEnquiries() {
                 top: 2,
                 right: 2,
                 zIndex: 3,
-                background: "#fff",
+                background: COLORS.dpBg,
                 border: `1px solid ${COLORS.border}`,
-                boxShadow: "0 10px 22px rgba(2,6,23,0.12)",
-                "&:hover": { background: "#fff" },
+                boxShadow: "0 10px 22px rgba(0,0,0,0.40)",
+                color: COLORS.text,
+                "&:hover": { background: "rgba(34,23,16,0.96)" },
               }}
             >
               <CloseRoundedIcon fontSize="small" />
@@ -963,89 +934,61 @@ export default function AdminAllEnquiries() {
 
         {/* Sections */}
         <Stack spacing={3.2}>
-          {/* Admissions */}
-          <Box ref={admissionsRef} sx={{ scrollMarginTop: "140px", ...sectionBg }}>
-            <Typography variant="h5" sx={{ fontWeight: 950, color: COLORS.text, mb: 2 }}>
+          <Box ref={admissionsRef} sx={{ scrollMarginTop: "140px", border: `1px solid ${COLORS.border}`, background: "rgba(44,29,20,0.46)", borderRadius: 4, p: { xs: 2.2, md: 3.0 }, boxShadow: "0 16px 44px rgba(0,0,0,0.28)" }}>
+            <Typography variant="h5" sx={{ fontWeight: 980, color: COLORS.text, mb: 2 }}>
               Admissions Desk
             </Typography>
-
             {!filtered.admissions.length ? (
               <Typography sx={{ color: COLORS.subText }}>No Enquiries yet</Typography>
             ) : (
               <Stack spacing={1.8}>
                 {filtered.admissions.map((r) => (
-                  <RowCard
-                    key={r.id}
-                    r={r}
-                    onDelete={deleteRowByActiveTab}
-                    deleting={deletingId === r.id}
-                  />
+                  <RowCard key={r.id} r={r} onDelete={deleteRowByActiveTab} deleting={deletingId === r.id} />
                 ))}
               </Stack>
             )}
           </Box>
 
-          {/* Angel */}
-          <Box ref={angelRef} sx={{ scrollMarginTop: "140px", ...sectionBg }}>
-            <Typography variant="h5" sx={{ fontWeight: 950, color: COLORS.text, mb: 2 }}>
+          <Box ref={angelRef} sx={{ scrollMarginTop: "140px", border: `1px solid ${COLORS.border}`, background: "rgba(44,29,20,0.46)", borderRadius: 4, p: { xs: 2.2, md: 3.0 }, boxShadow: "0 16px 44px rgba(0,0,0,0.28)" }}>
+            <Typography variant="h5" sx={{ fontWeight: 980, color: COLORS.text, mb: 2 }}>
               Angel Investment
             </Typography>
-
             {!filtered.angel.length ? (
               <Typography sx={{ color: COLORS.subText }}>No Enquiries yet</Typography>
             ) : (
               <Stack spacing={1.8}>
                 {filtered.angel.map((r) => (
-                  <RowCard
-                    key={r.id}
-                    r={r}
-                    onDelete={deleteRowByActiveTab}
-                    deleting={deletingId === r.id}
-                  />
+                  <RowCard key={r.id} r={r} onDelete={deleteRowByActiveTab} deleting={deletingId === r.id} />
                 ))}
               </Stack>
             )}
           </Box>
 
-          {/* Seed */}
-          <Box ref={seedRef} sx={{ scrollMarginTop: "140px", ...sectionBg }}>
-            <Typography variant="h5" sx={{ fontWeight: 950, color: COLORS.text, mb: 2 }}>
+          <Box ref={seedRef} sx={{ scrollMarginTop: "140px", border: `1px solid ${COLORS.border}`, background: "rgba(44,29,20,0.46)", borderRadius: 4, p: { xs: 2.2, md: 3.0 }, boxShadow: "0 16px 44px rgba(0,0,0,0.28)" }}>
+            <Typography variant="h5" sx={{ fontWeight: 980, color: COLORS.text, mb: 2 }}>
               Seed Funding
             </Typography>
-
             {!filtered.seed.length ? (
               <Typography sx={{ color: COLORS.subText }}>No Enquiries yet</Typography>
             ) : (
               <Stack spacing={1.8}>
                 {filtered.seed.map((r) => (
-                  <RowCard
-                    key={r.id}
-                    r={r}
-                    onDelete={deleteRowByActiveTab}
-                    deleting={deletingId === r.id}
-                  />
+                  <RowCard key={r.id} r={r} onDelete={deleteRowByActiveTab} deleting={deletingId === r.id} />
                 ))}
               </Stack>
             )}
           </Box>
 
-          {/* Remote */}
-          <Box ref={remoteRef} sx={{ scrollMarginTop: "140px", ...sectionBg }}>
-            <Typography variant="h5" sx={{ fontWeight: 950, color: COLORS.text, mb: 2 }}>
+          <Box ref={remoteRef} sx={{ scrollMarginTop: "140px", border: `1px solid ${COLORS.border}`, background: "rgba(44,29,20,0.46)", borderRadius: 4, p: { xs: 2.2, md: 3.0 }, boxShadow: "0 16px 44px rgba(0,0,0,0.28)" }}>
+            <Typography variant="h5" sx={{ fontWeight: 980, color: COLORS.text, mb: 2 }}>
               Remote Employment
             </Typography>
-
             {!filtered.remote.length ? (
               <Typography sx={{ color: COLORS.subText }}>No Enquiries yet</Typography>
             ) : (
               <Stack spacing={1.8}>
                 {filtered.remote.map((r) => (
-                  <RowCard
-                    key={r.id}
-                    r={r}
-                    onDelete={deleteRowByActiveTab}
-                    deleting={deletingId === r.id}
-                  />
+                  <RowCard key={r.id} r={r} onDelete={deleteRowByActiveTab} deleting={deletingId === r.id} />
                 ))}
               </Stack>
             )}

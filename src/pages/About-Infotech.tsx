@@ -101,18 +101,31 @@ const InfotechSection: React.FC = () => {
                       display: "grid",
                       placeItems: "center",
                       backgroundColor: "rgba(128,0,0,0.25)",
-                      color: "#fff5ea",
+                      color: "#ffffff", // ✅ brighter
                     }}
                   >
                     {pillar.icon}
                   </Box>
                   <Box>
-                    <Typography variant="h6" fontWeight={700}>
+                    <Typography
+                      variant="h6"
+                      fontWeight={800}
+                      sx={{
+                        color: "#ffffff", // ✅ bright white
+                        fontSize: { xs: "1.22rem", md: "1.32rem" }, // ✅ bigger
+                        lineHeight: 1.25,
+                      }}
+                    >
                       {pillar.title}
                     </Typography>
                     <Typography
                       variant="body2"
-                      sx={{ mt: 1, color: "rgba(255,245,234,0.7)" }}
+                      sx={{
+                        mt: 1,
+                        color: "rgba(255,255,255,0.84)", // ✅ brighter
+                        fontSize: { xs: "1.02rem", md: "1.08rem" }, // ✅ bigger
+                        lineHeight: 1.75,
+                      }}
                     >
                       {pillar.description}
                     </Typography>
@@ -143,12 +156,27 @@ const InfotechSection: React.FC = () => {
                   "linear-gradient(160deg, rgba(84,14,10,0.92), rgba(42,8,10,0.8))",
               }}
             >
-              <Typography variant="h5" fontWeight={700}>
+              <Typography
+                variant="h5"
+                fontWeight={800}
+                sx={{
+                  color: "#ffffff", // ✅ brighter
+                  fontSize: { xs: "1.45rem", md: "1.62rem" }, // ✅ bigger
+                  lineHeight: 1.2,
+                }}
+              >
                 Kilinochchi Innovation Timeline
               </Typography>
+
               <Typography
                 variant="body2"
-                sx={{ color: "rgba(255,245,234,0.65)", mt: 1.2, mb: 3 }}
+                sx={{
+                  color: "rgba(255,255,255,0.82)", // ✅ brighter
+                  mt: 1.2,
+                  mb: 3,
+                  fontSize: { xs: "1.0rem", md: "1.08rem" }, // ✅ bigger
+                  lineHeight: 1.75,
+                }}
               >
                 A snapshot of how we are transforming the Northern Province into
                 a launchpad for technology, creativity, and enterprise.
@@ -171,13 +199,17 @@ const InfotechSection: React.FC = () => {
                           flexDirection: "column",
                           alignItems: "center",
                           gap: 1,
-                          color: "rgba(255,245,234,0.8)",
+                          color: "rgba(255,255,255,0.86)", // ✅ brighter
                         }}
                       >
                         <Typography
                           variant="subtitle2"
-                          fontWeight={700}
-                          sx={{ letterSpacing: 1.2 }}
+                          fontWeight={800}
+                          sx={{
+                            letterSpacing: 1.2,
+                            color: "#ffffff", // ✅ brighter
+                            fontSize: { xs: "1.0rem", md: "1.05rem" }, // ✅ bigger
+                          }}
                         >
                           {milestone.year}
                         </Typography>
@@ -192,16 +224,28 @@ const InfotechSection: React.FC = () => {
                           }}
                         />
                       </Box>
+
                       <Box>
-                        <Typography variant="subtitle1" fontWeight={600}>
+                        <Typography
+                          variant="subtitle1"
+                          fontWeight={800}
+                          sx={{
+                            color: "#ffffff", // ✅ brighter
+                            fontSize: { xs: "1.12rem", md: "1.18rem" }, // ✅ bigger
+                            lineHeight: 1.25,
+                          }}
+                        >
                           {milestone.heading}
                         </Typography>
+
                         <Typography
                           variant="body2"
                           sx={{
                             mt: 0.8,
-                            color: "rgba(255,245,234,0.68)",
+                            color: "rgba(255,255,255,0.82)", // ✅ brighter
                             maxWidth: 340,
+                            fontSize: { xs: "1.0rem", md: "1.06rem" }, // ✅ bigger
+                            lineHeight: 1.75,
                           }}
                         >
                           {milestone.detail}
@@ -216,15 +260,7 @@ const InfotechSection: React.FC = () => {
         </Box>
       </Stack>
     </Container>
-  
   );
 };
 
 export default InfotechSection;
-
-
-
-
-
-
-

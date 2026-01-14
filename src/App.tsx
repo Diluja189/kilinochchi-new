@@ -260,7 +260,7 @@ const App: React.FC = () => {
         <Route path="/careerguide" element={<CareerGuideRoute />} />
 
         {/* ✅ Admin Routes */}
-        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/login" element={<AdminLogin />} />
 
         {/* ✅ ONE Admin Page: All 4 enquiries + buttons + scroll */}
         <Route
